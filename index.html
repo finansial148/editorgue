@@ -1609,9 +1609,19 @@ function linkgambarpoto() {
 document.querySelector('.xrn-xttbiji').style.display = 'none';
 }
   </script>
-  
+  <script>
+  // Cek apakah browser HP/Laptop mendukung fitur Offline (Service Worker)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('Satpam Offline Aktif di: ', reg.scope))
+        .catch((err) => console.log('Satpam Gagal Tugas: ', err));
+    });
+  }
+</script>
 </body>
 </html>
+
 
 
 
