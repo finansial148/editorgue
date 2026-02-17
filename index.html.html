@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">     
+<meta content='#000000' name='theme-color'/>
+<meta content='#000000' name='msapplication-navbutton-color'/>
+<meta content='yes' name='mobile-web-app-capable'/>
+<meta content='#000000' name='apple-mobile-web-app-status-bar-style'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Tes Mesin CNC & Coding</title>
+    <style>
+       /*-------untuk blogspot-------------*/
+    .date-outer,.content-inner {
+    background-color: #000000;
+} 
+     .mobile .content-outer {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    margin: auto;
+} 
+      h3.post-title.entry-title {
+    display: none;
+}
+  /*------- papan editor awal-------------*/
+  .wadah-sakti {
+    position: relative; /* Biar bisa ditumpuk */
+    width: 100%; height: 360px;text-align: left;/*overflow: overlay;*/
+  }
+
+  /* Pastikan keduanya pakai settingan ini */
+#filterTabel, #xcode2 {
+    font-family: 'Courier New', Courier, monospace; /* Font wajib sama */
+    font-size: 16px;       /* Ukuran wajib sama */
+    line-height: 20px;     /* Jarak antar baris wajib dikunci */
+    letter-spacing: 0px;   /* Jarak antar huruf wajib nol */
+    padding: 15px;
+    margin: 0;
+    box-sizing: border-box;
+    tab-size: 4;           /* Biar kalau ngetik Tab tetep rata */
+  outline: none;
+}
+
+#filterTabel {
+    background: transparent;
+    color: transparent; /* Tulisan asli sembunyi */
+    caret-color: white; /* Kursor tetep kelihatan */
+    z-index: 2;
+    white-space: pre; /* Biar nggak ganti baris otomatis */
+    overflow: auto;
+  position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:350px;/*height:10000px;*/
+    border: 1px solid #444;
+    resize: none;
+}
+
+#xcode2 {
+    background: #1e1e1e;
+    color: #91ff00;
+    z-index: 1;
+    white-space: pre; /* Wajib sama dengan textarea */
+    pointer-events: none;/* BIAR NGGAK BISA DIKLIK (BIAR TEMBUS KE TEXTAREA) */
+  position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:350px;/*height:10000px;*/
+    border: 1px solid #444;
+    overflow: auto;
+}
+
+/* Biar span nggak nambahin lebar */
+#xcode2 span {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+  .xbijw{color:#fff000;}
+      
+      /*muncul disetiap kursor---*/
+   #kelompokHtSt {
+    position: absolute; /* Biar bisa melayang */
+    z-index: 1000;      /* Biar nggak ketutup teks */
+    display: none;      /* Sembunyi dulu */
+    background:#c7c7c7;   /* Kasih background biar kontras */
+    padding: 5px;
+    border-radius: 5px;
+}
+      div#kelompokHtSt input {
+    background: transparent;
+    border: 1px solid #0000005e;
+    padding: 5px;
+    border-radius: 3px;
+}
+  /*------- papan editor akhir-------------*/
+
+      
+    .btn-sakti,.btn-ikon { padding: 10px 15px; margin: 2px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; background: #f0f0f0; }
+  .btn-sakta { padding: 10px 15px; margin: 2px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; background: #f0f0f0; }
+    .btn-copy { background: #3498db; color: white; border: none; }
+	 .xtoolbak {
+    border: 1px solid;
+    padding: 10px;
+    max-width: 400px;
+    margin: auto;
+    margin-top: 10px;
+}
+  .xtoolbar {
+    border: 1px solid;
+    padding: 10px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;height: 250px;
+    overflow: overlay;
+}
+  div#toolbar2 input  {
+    font-weight: normal;
+    font-size: 25px;
+    margin: 3px;
+    padding: 2px 10px;
+}
+  div#toolbar2 input,div#toolbar1 input,input.btn-sakti{background:black;color:#00ff00;}
+  input.btn-sakti.bgt {
+    background: white;
+    border: 0;
+    color: black;
+    margin: 5px;
+}
+
+/*------------*/
+.xrnbiji {
+    border: 1px solid;
+    width: auto;
+    font-size: 12px;
+    border-radius: 5px;
+    margin-left: 5px;padding: 5px;color: #b3b3b3;
+}
+.xrn-xttbiji {display: none;z-index: 4;left: 0;margin-top: 10px;background-color: #ffffff;position: absolute;border: 1px solid #00000094;width: 60px;padding: 5px;border-radius: 5px;top:0;}
+
+.xrnbiji:hover .xrn-xttbiji {display: block;}
+
+
+.xrnbiji:hover {
+    background-color:#ffe10838;
+}
+
+input.btn-sakti.xsinya {
+    color: #ffffff;
+    border: 0;
+    background: transparent;
+    padding: 10px;
+}
+
+/*---------------BUKU SAKU AWAL---------*/
+
+    /* Area Kerja (Besar) */
+    #wadah-utama {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        min-height: 200px;
+        border: 1px solid #ddd;text-align: left;
+    }
+
+    .editor-aktif { outline: none; min-height: 150px; }
+    .judul-aktif { font-size: 1.5em; font-weight: bold; border: none; outline: none; width: 100%; display: block; margin-bottom: 5px; }
+    .tgl-aktif { font-size: 12px; color: gray; margin-bottom: 15px; display: block; }
+
+    /* Daftar Saku (Kecil/Tabel) */
+    #wadahsaku {
+        background: transparent;
+        width: 90%;margin:auto;
+        border-collapse: collapse;
+        margin-top: 10px;text-align:left;height: 415px;
+    overflow: overlay;
+    }
+
+    .item-saku {
+        border-bottom: 1px solid #eee;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+    margin-bottom: 5px;cursor: pointer;
+    }
+
+    .item-saku:hover { background: #f9f9f9; }
+    .info-saku { flex-grow: 1; }
+    .info-saku b { display: block; color: #333; }
+    .info-saku small { color: #999; font-size: 11px; }
+
+    .btn-tambah {
+        background: #2196F3; color: white; border: none; padding: 10px 20px;
+        border-radius: 5px; cursor: pointer; margin-bottom: 10px; width: 90%;
+    }
+
+    .btn-hapus { color: #ff5252; font-weight: bold; padding: 10px; cursor: pointer; border: none; background: none; }
+
+/*--------------BUKU SAKU AKHIR---------*/
+.kotak-menuTool {
+    border:0px solid;
+    max-width: 500px;
+    margin: auto;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.kotak-menuTool span {
+    border: 1px solid #d9d9d9;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: #0000002e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+}
+      .kotak-menuTool span i {
+    font-size: 25px;
+}
+      .tulis,.layer,.label,.klip,.buku{display:none;/*max-width: 500px;*/margin:auto;height: 450px;}
+ span.tulis,span.layer,span.label,span.klip,span.buku{background:transparent;height:auto;}
+      
+      /*-------- spinner awal---------*/
+div#muter{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; text-align: center;}
+@keyframes pelangi-warna {
+    0% { color: #ff0000; }   /* Merah */
+    20% { color: #ffb100; }  /* Oranye */
+    40% { color: #ffff00; }  /* Kuning */
+    60% { color: #00ff00; }  /* Hijau */
+    80% { color: #00ffff; }  /* Biru Muda */
+    100% { color: #ff00ff; } /* Ungu/Pink */
+}
+
+.spinner-pelangi {
+    animation: pelangi-warna 2s linear infinite !important;
+}
+.spinner-pelangi {margin-top: 10px; font-family: monospace; font-weight: bold; letter-spacing: 2px;
+}
+/*-------- spinner akhir---------*/
+      
+      
+/*-------- warnai spasi awal---------*/      
+      .editor-aktif {
+    white-space: pre-wrap; /* Biar spasi beneran tetep kelihatan rapi */
+}
+
+/* Deteksi karakter khusus (beberapa browser mendukung ini) */
+.editor-aktif::selection {
+    background: #ff00ff; /* Pas di-blok warnanya jadi ungu ngejreng */
+    color: #fff;
+}
+
+/* Trik Visual: Menandai spasi berlebih */
+.editor-aktif div {
+    min-height: 1em; /* Biar baris kosong nggak hilang */
+}
+      /*-------- warnai spasi akhir---------*/
+
+      #toolbar1 {
+    transition: all 0.3s ease;
+}
+      /*------box klip awal----------*/
+      .xbox-klip {
+  position: relative;
+
+}
+
+  .isixboxklip {
+    display: none;
+    background-color: #f1f1f1;
+    height: 300px;
+    overflow: overlay;
+    padding: 10px;
+}
+
+.xbox-klip:hover .isixboxklip {display: block;}
+
+
+.xbox-klip:hover {
+    background-color: #000000;
+    padding: 5px;
+    border-radius: 3px;padding-bottom: 20px;
+}
+      .judulxklip {
+    border: 1px solid #00000075;
+    padding: 10px;
+    width: 50%;
+    margin: auto;
+    margin-top: 5px;
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+}
+      
+      /*------box klip akhir-------*/
+/*---tombol flex awal--*/
+.flekx {
+  position: relative;
+}
+  .flek-isifl {
+    display: none;
+    width: 50%;
+}
+.flekx:hover .flek-isifl {display: block;}
+.flekx:hover {
+    padding: 5px;
+    border-radius: 3px;
+}
+.flekx button{margin:3px;}
+  /*--tombol flex akhir--*/
+ button.btn-ikon-flex {
+    margin: 3px;
+}     
+  </style>
+  <style id="kolom-bukatutuphalaman">.tulis{display:block;}span.tulis{background:#ebebeb;color:black;}</style>
+</head>
+<body style="background:#000000">
+  <div class="tulis">	  
+<div class="wadah-sakti">
+  <textarea id="filterTabel" onkeyup="simpanDanTampil(this.value)" oninput="simpanDanTampil(this.value)" onscroll="samainScroll()"></textarea>
+  <div id="xcode2"></div>
+   
+  <!---ini untuk tombol HTML DAN CSS--->
+  <div id="kelompokHtSt" style="display:none;">
+
+</div><input type="button" class="btn-KodHs" value="gila">
+<input type='button' id='carikodeSh' onclick='carikodeSdanH()' class='baja' value='' style="display:none;">
+  <!---tombol HTML DAN CSS diakhiri disni--->
+</div>
+    <div id="kotakFlex" style="display:none;position: absolute;top: 0;z-index: 9;">
+      <div style=" display:flex;width: 150px;flex-direction: row;flex-wrap: wrap;">
+        <button class="btn-ikon-flex" onclick="yangpanjang('display: flex;')">
+            <span class="material-symbols-outlined">settings_overscan</span>
+        </button>
+
+        <button class="btn-ikon-flex" onclick="yangpanjang('flex-direction: row;')">
+            <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+        <button class="btn-ikon-flex" onclick="yangpanjang('flex-direction: column;')">
+            <span class="material-symbols-outlined">arrow_downward</span>
+        </button>
+
+        <button class="btn-ikon-flex" onclick="yangpanjang('justify-content: center; align-items: center;')">
+            <span class="material-symbols-outlined">align_center</span>
+        </button>
+
+        <button class="btn-ikon-flex" onclick="yangpanjang('justify-content: space-between;')">
+            <span class="material-symbols-outlined">unfold_more_double</span>
+        </button>
+
+        <button class="btn-ikon-flex" onclick="yangpanjang('flex-wrap: wrap;')">
+            <span class="material-symbols-outlined">wrap_text</span>
+        </button>
+
+        <button class="btn-ikon-flex" onclick="yangpanjang('gap: 10px;')">
+            <span class="material-symbols-outlined">grid_goldenratio</span>
+        </button>
+      </div>
+      <div>
+        <p></p>Rotate<br>
+        <input type="button" class="btn-sakti" value="-90°" onclick="isiNilai('transform: rotate(-90deg);')">
+        <input type="button" class="btn-sakti" value="90°" onclick="isiNilai('transform: rotate(90deg);')">
+      </div>
+    </div>                 
+<div id="toolbar1" style="margin-bottom: 15px;">
+  <input type="button" class="btn-sakta btn-copy" value="Copy All" onclick="copyKeClipboard()" style="background: #3498db; color: white; border: none;">
+  <input type="button" class="btn-sakta btn-hapus" value="Clear" onclick="hapusSemua()" style="background: #e74c3c;color: white;">
+  <a href="" class="btn-sakta"><i class="fa fa-refresh" aria-hidden="true"></i></a> 
+  <input type="text" id="cariTeks" placeholder="Cari kata..." 
+         oninput="jalankanFiturCari()" 
+         style="padding: 8px; border-radius: 5px; border: 1px solid #33aaff; background: #222; color: white; width: 30%;">
+  </div>
+<div id="wadah-biji" style="display:flex;">
+ <div class="xrnbiji"><i class="fa fa-paint-brush" aria-hidden="true"></i> 
+<div class="xrn-xttbiji">
+<input type="button" onclick="getColor()" value="Ambil" style="margin-bottom: 5px;">
+<input id="inputColor" type="color" value="yellow"/>
+<input id="tekopy" type="text" value="Pilih" style="width: 60px;text-align: center;background: transparent;border: 0;">
+</div></div>	  
+ <div class="xrnbiji"><i class="fa fa-code" aria-hidden="true"></i>
+<div class="xrn-xttbiji" style="width: 50%;background: #393939;">
+  <input type="button" class="btn-sakta" value="<>" onclick="isiNilai('<>')">
+  <input type="button" class="btn-sakta" value="</>" onclick="isiNilai('</>')">
+  <input type="button" class="btn-sakta" value="/" onclick="isiNilai('/')">
+  <input type="button" class="btn-sakta" value="?" onclick="isiNilai('?')">
+  <input type="button" class="btn-sakta" value="{}" onclick="isiNilai('{}')">
+  <input type="button" class="btn-sakta" value="[]" onclick="isiNilai('[]')">
+  <input type="button" class="btn-sakta" value="()" onclick="isiNilai('()')">
+  <input type="button" class="btn-sakta" value="-" onclick="isiNilai('-')">
+  <input type="button" class="btn-sakta" value="_" onclick="isiNilai('_')">
+  <input type="button" class="btn-sakta" value="*" onclick="isiNilai('*')">
+  <input type="button" class="btn-sakta" value="+" onclick="isiNilai('+')">
+  <input type="button" class="btn-sakta" value="=" onclick="isiNilai('=')">
+  <input type="button" class="btn-sakta" value="." onclick="isiNilai('.')">
+<input type="button" class="btn-sakta" value="'" onclick="isiNilai('\'')">
+<input type="button" class="btn-sakta" value='"' onclick="isiNilai('&quot;')">
+  <input type="button" class="btn-sakta" value="%" onclick="isiNilai('%')">
+  <input type="button" class="btn-sakta" value="#" onclick="isiNilai('#')">
+  <input type="button" class="btn-sakta" value=":" onclick="isiNilai(':')">
+  <input type="button" class="btn-sakta" value=";" onclick="isiNilai(';')"> 
+</div></div>  
+ <div class="xrnbiji"><i class="fa fa-link" aria-hidden="true"></i>
+<div class="xrn-xttbiji" style="border:0;width: 80%;background: transparent;">
+<input id="lingBuatbaru" type="text" placeholder="masukan link" value="" style="width: 50%;padding: 10px;margin-top: 20px;border-radius: 5px;border: 1px solid beige;">
+ <w  onclick='simpanDanTampil()'><button onclick=" buatLingb()" style="width:20%;padding: 10px;margin-top: 20px;border-radius: 5px;border: 1px solid beige;">kirim</button></w>
+</div></div>
+ <div class="xrnbiji"><i class="fab fa-html5"></i>
+<div onclick="simpanDanTampil()" class="xrn-xttbiji" style="border:0;width: 80%;background: transparent;">
+<input type='button' class="btn-sakti bgt" onclick='yangpanjang("<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style></style></head><body><div class=\"wadah\">")' value='Buka HTML' style="display:block;">
+<input type='button' class="btn-sakti bgt" onclick='yangpanjang("</div></body></html>")' value='Tutup HTML' style="display:block;">
+</div></div>
+  <div class="xrnbiji"><i class="fa fa-image"></i>
+    <div class="xrn-xttbiji" style="border:0;width: 250px;background:#404040;padding:10px;text-align: center;">
+    <button onclick="bukaGaleri()" style="width:100%;margin-bottom:20px;text-align:left;padding: 10px;border-radius: 10px;color: #767676;">
+ Ambil Dari perangkat
+</button>
+<input type="file" id="ambilFoto" accept="image/*" style="display: none;" onchange="prosesGambar(this)">
+  <span style="display:flex;">
+      <input type="text" id="linggambr" placeholder="Ambil Dari link" value="" style="padding: 10px;border-radius: 7px;border: 0;"><input type="button" onclick="linkgambarpoto()" value="kirim" style="padding: 10px;border-radius: 7px;border: 0;">
+    </span>
+    </div>
+  </div> 
+</div> 
+    <div id="console-mini" style="background:#1e1e1e; color:#ffffff; font-family:monospace; padding:10px; border:2px solid #444; height:90px; overflow-y:auto; font-size:12px; margin-top:10px;">
+    <span style="color:#888;">-- Radar Aktif, Bang! --</span>
+</div>
+  </div>
+  <div class="layer" style="height: 650px;overflow: overlay;">
+<div id="jajal" style="border:0px solid #3498db; padding: 15px; border-radius:0px; background:#ffffff;min-height: 500px;overflow: overlay;"></div> 
+   <!--<input type="button" class="btn-sakta" value="Run script" onclick="runningScript()" style="background:orange;">-->
+    </div>
+  <div class="label">
+       <input type="text" id="cariKata" oninput="cariSakti()" placeholder="Ketik div, display, atau style..." 
+	   style="width: 90%;padding: 10px;margin-top: 20px;border-radius: 5px;border: 1px solid beige;">
+    
+<div id="toolbar" style="display:none;">
+<div class="xtoolbak">
+  <input type="button" class="btn-sakti" value="div" onclick="isiNilai('div')">
+  <input type="button" class="btn-sakti" value="<div>" onclick="isiNilai('<div></div>')">
+  <input type="button" class="btn-sakti" value="display" onclick="isiNilai('display')">
+   <input type="button" class="btn-sakti" value="class" onclick="isiNilai('class')">  
+  <input type="button" class="btn-sakti" value="style" onclick="isiNilai('style')">
+  <input type="button" class="btn-sakti" value="span" onclick="isiNilai('span')">
+  <input type="button" class="btn-sakti" value="<span>" onclick="isiNilai('<span></span>')">
+  <input type="button" class="btn-sakti" value="border" onclick="isiNilai('border')">
+  <input type="button" class="btn-sakti" value="table" onclick="isiNilai('table')">
+  <input type="button" class="btn-sakti" value="tbody" onclick="isiNilai('tbody')">
+  <input type="button" class="btn-sakti" value="tr" onclick="isiNilai('tr')">
+  <input type="button" class="btn-sakti" value="td" onclick="isiNilai('td')">
+  <input type="button" class="btn-sakti" value="bckgr" onclick="isiNilai('background')">
+  <input type="button" class="btn-sakti" value="pdg" onclick="isiNilai('padding')">
+  <input type="button" class="btn-sakti" value="mrg" onclick="isiNilai('margin')">
+  <input type="button" class="btn-sakti" value="px" onclick="isiNilai('px')">
+  <input type="button" class="btn-sakti" value="width" onclick="isiNilai('width')">
+  <input type="button" class="btn-sakti" value="height" onclick="isiNilai('height')">
+  <input type="button" class="btn-sakti" value="button" onclick="isiNilai('<button></button>')">
+  <div class="flekx">flex
+  <div class="flek-isifl">
+<button class="btn-ikon" onclick="yangpanjang(this.value)" value='display:flex;'>
+<span class="material-symbols-outlined">Cards</span>
+</button>
+<button class="btn-ikon" onclick="yangpanjang(this.value)" value='flex-direction: row;'>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="btn-ikon" onclick="yangpanjang(this.value)" value='flex-direction: column-reverse;'>
+<span class="material-symbols-outlined">arrow_upward</span>
+</button>
+<button class="btn-ikon" onclick="yangpanjang(this.value)" value='flex-direction: column;'>
+<span class="material-symbols-outlined">arrow_downward</span>
+</button>
+<button class="btn-ikon" onclick="yangpanjang(this.value)" value='justify-content: space-between;'>
+<span class="material-symbols-outlined">align_justify_space_around</span>
+</button>
+<button class="btn-ikon" onclick="yangpanjang(this.value)" value='align-items: center;'>
+<span class="material-symbols-outlined">align_vertical_center</span>
+</button>
+<button class="btn-ikon" onclick="yangpanjang(this.value)" value='flex-direction: row-reverse;'>
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+</div>
+</div>
+  </div>
+  <div class="xtoolbar" onclick='simpanDanTampil()'>
+  <input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<input type="text" onclick="()" placeholder="" value="">'>
+  <input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<div id=""></div>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<div class=""></div>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<div style=""></div>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<span id=""></span>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<span class=""></span>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<span style=""></span>'>
+<button type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<table border""><tbody><tr><td></td></tr></tbody></table>'>Tabel</button>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<tr><td></td></tr>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<td></td>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<ul style="list-style:none;margin:0;padding:0;"><li></li></ul>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<li></li>'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='display: flex;flex-direction: row;align-items: center;justify-content: space-between;'>
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='document.getElementById("");'>   
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value="localStorage.setItem('', );">
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value="localStorage.getItem('');">
+<input type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value="localStorage.removeItem('');">
+<button type='button' class="btn-sakti xsinya" onclick='yangpanjang(this.value)' value='<input type="text"   id="dataInput"><button onclick="saveData()">Save Data</button>
+        <button onclick="hapus()">hapus</button>
+        <div id="saveku"></div>
+<script>
+        function saveData() {
+            const bata = document
+                .getElementById("dataInput").value;
+            localStorage.setItem("userkunc", bata);
+            displayData();
+        }
+        function displayData() {
+            const ta = localStorage
+                .getItem("userkunc");
+            document.getElementById("saveku").innerHTML = ""+ ta +"" ;
+        }
+        function hapus() { localStorage.removeItem("userkunc");
+            displayData();
+        }
+        displayData();
+</script>'>localStorage 1</button>
+<input type='button' class="btn-sakti xsinya" 
+       onclick='yangpanjang(this.value)' 
+       value="<script>console.log('Cek: ', namaVariabel);</script>">
+</div>
+  </div>
+  <div id="terkirim" style="display: none;font-size: 20px;color: #0014ff;font-weight: bold;">Terkirim</div>
+    </div>
+  <div class="klip">
+    <div class="drn-cttbiji" style="max-width: 500px;margin:auto;background: #bbbbbb;height: 450px;overflow: overlay;">
+      <div class="xbox-klip">
+        <div class="judulxklip">Icon Awesome</div>
+<div class="isixboxklip">
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-home"></i>'>
+   <i class="fa fa-home"></i> Home
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-gear"></i>'>
+   <i class="fa fa-gear"></i> Gear
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-trash"></i>'>
+   <i class="fa fa-trash"></i> Hapus
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-paper-plane"></i>'>
+   <i aria-hidden="true" class="fa fa-paper-plane"></i>plane
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-coffee"></i>'>
+<i class="fa fa-coffee"></i>coffee
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-cog"></i>'>
+<i aria-hidden="true" class="fa fa-cog"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-camera-retro"></i>'>
+<i aria-hidden="true" class="fa fa-camera-retro"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-server"></i>'>
+<i aria-hidden="true" class="fa fa-server"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-user"></i>'>
+<i aria-hidden="true" class="fa fa-user"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-share"></i>'>
+<i aria-hidden="true" class="fa fa-share"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-paper-plane"></i>'>
+<i aria-hidden="true" class="fa fa-paper-plane"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-user-circle-o"></i>'>
+<i aria-hidden="true" class="fa fa-user-circle-o"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-comment"></i>'>
+<i aria-hidden="true" class="fa fa-comment"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-ellipsis-v"></i>'>
+<i aria-hidden="true" class="fa fa-ellipsis-v"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-caret-square-o-down"></i>'>
+<i aria-hidden="true" class="fa fa-caret-square-o-down"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-caret-square-o-up"></i>'>
+<i aria-hidden="true" class="fa fa-caret-square-o-up"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-pencil"></i>'>
+<i class="fa fa-pencil"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-trash"></i>'>
+<i class="fa fa-trash"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-tv"></i>'>
+<i class="fa fa-tv"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-image"></i>'>
+<i class="fa fa-image"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-edit"></i>'>
+<i class="fa fa-edit"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-check"></i>'>
+<i class="fa fa-check"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-reply"></i>'>
+<i class="fa fa-reply"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-arrow-circle-o-left"></i>'>
+<i aria-hidden="true" class="fa fa-arrow-circle-o-left"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-search"></i>'>
+<i class="fa fa-search"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-eraser"></i>'>
+<i class="fa fa-eraser"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-cubes"></i>'>
+<i aria-hidden="true" class="fa fa-cubes"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-cube"></i>'>
+<i aria-hidden="true" class="fa fa-cube"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-tag"></i>'>
+<i aria-hidden="true" class="fa fa-tag"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-tags"></i>'>
+<i aria-hidden="true" class="fa fa-tags"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fas fa-file-export"></i>'>
+<i class="fas fa-file-export"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fas fa-book"></i>'>
+<i class="fas fa-book"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fas fa-cash-register"></i>'><i class="fas fa-cash-register"></i></button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fas fa-list-alt"></i>'><i class="fas fa-list-alt"></i></button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fas fa-tasks"></i>'><i aria-hidden="true" class="fas fa-tasks"></i></button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fas fa-filter"></i>'><i aria-hidden="true" class="fas fa-filter"></i></button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-bar-chart"></i>'>
+<i aria-hidden="true" class="fa fa-bar-chart"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-male"></i>'>
+<i aria-hidden="true" class="fa fa-male"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-suitcase"></i>'>
+<i aria-hidden="true" class="fa fa-suitcase"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-thumb-tack"></i>'>
+<i class="fa fa-thumb-tack"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-chevron-circle-left"></i>'>
+<i class="fa fa-chevron-circle-left"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-folder-open-o"></i>'>
+<i class="fa fa-folder-open-o"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-circle-o-notch fa-folder-open"></i>'>
+<i class="fa fa-circle-o-notch fa-folder-open"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-users"></i>'>
+<i aria-hidden="true" class="fa fa-users"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-folder-open"></i>'>
+<i class="fa fa-folder-open"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-envelope-open-o"></i>'>
+<i aria-hidden="true" class="fa fa-envelope-open-o"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-envelope"></i>'>
+<i class="fa fa-envelope"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-envelope-o"></i>'>
+<i aria-hidden="true" class="fa fa-envelope-o"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-folder"></i>'>
+<i aria-hidden="true" class="fa fa-folder"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-envelope-open"></i>'>
+<i aria-hidden="true" class="fa fa-envelope-open"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa fa-envelope-open-o"></i>'>
+<i class="fa fa-envelope-open-o"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-download"></i>'>
+<i aria-hidden="true" class="fa fa-download"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-envelope-open"></i>'>
+<i aria-hidden="true" class="fa fa-envelope-open"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-file-pdf-o"></i>'>
+<i aria-hidden="true" class="fa fa-file-pdf-o"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-file-text-o"></i>'>
+<i aria-hidden="true" class="fa fa-file-text-o"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-info"></i>'>
+<i aria-hidden="true" class="fa fa-info"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-clipboard"></i>'>
+<i aria-hidden="true" class="fa fa-clipboard"></i>
+</button>
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-user">pengguna</i>'>
+<i aria-hidden="true" class="fa fa-user">pengguna</i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i aria-hidden="true" class="fa fa-whatsapp"></i>'>
+<i aria-hidden="true" class="fa fa-whatsapp"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa-li fa fa-check-square"></i>'>
+<i class="fa-li fa fa-check-square"></i>
+</button> 
+    <button class="btn-ikon" onclick="yangpanjang(this.value)" value='<i class="fa-li fa fa-check-square"></i>'>
+<i class="fa-li fa fa-check-square"></i>
+</button>
+  <p></p>
+  <textarea style="width: 95%;height: 120px;padding: 10px;outline: none;">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
+    
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet"/>
+  </textarea>
+  <a href="https://modelx.io/docs/font-awesome/">Sumber Web Awesome</a>
+</div>
+      </div>
+            <div class="xbox-klip">
+        <div class="judulxklip">Button & script</div>
+              <div class="isixboxklip">
+              <textarea style="width: 95%;height: 170px;padding: 10px;outline: none;margin-bottom: 5px;">
+<input id="sampel" type="text" value="">
+    <button type="button" onclick="ganti(this.value)" value='klik '>
+klik 3
+</button>
+<script>
+function ganti (b){
+document.getElementById('sampel').value += b;
+}
+</script>
+</textarea>
+                <a href="https://tescobaaja.blogspot.com/2025/11/peringatan-input.html" style="border: 1px solid;padding: 5px;margin-bottom: 5px;">Peringatan input</a>
+                 <a href="https://tescobaaja.blogspot.com/2022/09/function-readurlinput-document.html" style="border: 1px solid;padding: 5px;margin-bottom: 5px;">Uplot base64</a>
+              </div>
+      </div>
+      </div></div>
+  <div class="buku">
+  <div class="buku-saku-versi2">
+    <div id="lebarbukubaru" style="text-align:center;">
+  <button class="btn-tambah" onclick="tambahLembaran()">+ Lembaran Baru</button>
+    </div>
+<div id="klip" style="display:none;">
+<div id="wadah-utama">
+    <div style="color: #ccc; text-align: center; margin-top: 50px;">Pilih catatan di bawah atau buat baru</div>
+</div>
+</div>
+<div id="wadahsaku"></div>
+    <div style="padding:50px;"></div>
+  </div>
+      </div>
+  <div style="position: fixed;bottom: 0;z-index: 9;border:0px solid;left: 0;width: 100%;">
+    <div class="kotak-menuTool">
+      <span onclick="tutupKolom('buku')" class="buku"><i aria-hidden="true" class="fa fa-clipboard"></i>arsip</span>
+      <span onclick="tutupKolom('klip')" class="klip"><i class="fa fa-paperclip" aria-hidden="true"></i>klip</span>
+      <span onclick="tutupKolom('label')" class="label"><i class="fa fa-tag" aria-hidden="true"></i>label</span>
+      <span onclick="tutupKolom('layer')" class="layer"><i class="fa fa-tv" onclick="runningScript()"></i>layer</span>
+      <span onclick="tutupKolom('tulis')" class="tulis"><i class="fa fa-pencil"></i>Tulis</span> 
+    </div>
+  </div>
+
+<script>
+    // Fungsi Load Data
+    window.onload = function() {
+        const dataLama = localStorage.getItem('KODE_SAKTI_HP');
+        if (dataLama) {
+            document.getElementById('filterTabel').value = dataLama;
+            simpanDanTampil();
+        }
+    };
+
+// 1. Fungsi buat masukin nilai (Disederhanakan buat HP)
+function isiNilai(karakter) {
+    const area = document.getElementById('filterTabel');
+    const start = area.selectionStart;
+    const end = area.selectionEnd;
+
+    // Masukin teks di posisi kursor
+    area.value = area.value.substring(0, start) + karakter + area.value.substring(end);
+
+  	
+    terkirim.style.display = "block";
+ setTimeout(() => {
+        terkirim.style.display = "none";
+		
+    }, 2000); 
+	
+    // Update simpanan & preview HTML saja (tanpa script dulu)
+    simpanDanTampil();
+}
+
+function samainScroll() {
+  var filterTabel = document.getElementById('filterTabel');
+  var xcode2 = document.getElementById('xcode2');
+  xcode2.scrollTop = filterTabel.scrollTop;
+  xcode2.scrollLeft = filterTabel.scrollLeft;
+}
+  
+// 2. Fungsi simpan & tampilkan HTML/CSS saja
+// --- 1. TARUH DI LUAR (Paling Atas) ---
+// Biar console.error siaga dari awal
+const errorAsli = console.error;
+let pesanTerakhir = ""; // Ini buat "ingatan" si console
+
+console.error = function (pesan) {
+    const con = document.getElementById('console-mini');
+    
+    // CEK: Kalau pesan sekarang SAMA dengan pesan terakhir, cuekin aja!
+    if (pesan === pesanTerakhir) {
+        errorAsli.apply(console, arguments);
+        return;
+    }
+
+    if (con) {
+        // Simpan pesan ini ke ingatan
+        pesanTerakhir = pesan;
+
+        con.innerHTML += `<div style="margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 2px;">
+            <span style="color:#ff4444;">[ERR]:</span> ${pesan}
+        </div>`;
+        
+        con.scrollTop = con.scrollHeight;
+
+        // Reset ingatan setelah 1 detik (biar kalau errornya muncul lagi nanti, tetep ketahuan)
+        setTimeout(() => { pesanTerakhir = ""; }, 1000);
+    }
+    errorAsli.apply(console, arguments);
+};
+  
+function jalankanFiturCari() {
+    // Ambil isi textarea
+    let isi = document.getElementById('filterTabel').value;
+    simpanDanTampil(isi); // Panggil fungsi tampil biar direfresh
+}
+  
+function simpanDanTampil(ambl) {
+    const area = document.getElementById('filterTabel');
+    const isi = area.value;
+  // --- DETEKSI PINTU RAHASIA FLEX ---
+if (isi.includes("flex")) {
+        // Simpan posisi kursor saat ini
+        let posisiKursor = area.selectionStart;
+
+        document.getElementById('kotakFlex').style.display = "flex";
+        
+        // Hapus kata 'flex' (4 karakter)
+        area.value = isi.replace(/flex/g, "");
+        
+        // Kembalikan kursor ke posisi asalnya (dikurangi 4 karena kata 'flex' hilang)
+        let posisiBaru = posisiKursor - 4;
+        area.setSelectionRange(posisiBaru, posisiBaru);
+        
+        area.focus();
+    }
+    const xcode2 = document.getElementById('xcode2');
+    let kataKunci = document.getElementById('cariTeks').value;
+
+    cekKesehatanScript(isi);
+
+    // --- 1. PROSES AWAL ---
+    var str = isi;
+
+    // Deteksi const (Jurus Merah Abang)
+    let daftarConst = [];
+    let match;
+    let regexConst = /const\s+(\w+)\s*=/g;
+    while ((match = regexConst.exec(str)) !== null) {
+        daftarConst.push(match[1]);
+    }
+    daftarConst.forEach(nama => {
+        let radar = new RegExp(`\\b${nama}\\b`, 'g');
+        str = str.replace(radar, `TOKEN_MERAH_${nama}_TOKEN`);
+    });
+
+    // --- 2. PEMBERSIHAN SIMBOL ---
+    str = str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\//g, "&#47;");
+
+    // --- 3. GEMBOK KOMENTAR (SIHIR BARU) ---
+    // Cari // yang didepannya BUKAN titik dua (biar https:// aman)
+    str = str.replace(/(^|[^:])&#47;&#47;.*/g, (match) => {
+        return `TOKEN_KOMENTAR_MULAI${match}TOKEN_KOMENTAR_SELESAI`;
+    });
+
+    str = str.replace(/&lt;!--[\s\S]*?--&gt;/g, (match) => {
+        return `TOKEN_KOM_HTML_MULAI${match}TOKEN_KOM_HTML_SELESAI`;
+    });
+
+    // --- 4. PEWARNAAN OTOMATIS (CSS & ATRIBUT) ---
+    str = str.replace(/([a-zA-Z0-9-]+)([:=])/g, (match, kata, simbol) => {
+        if (simbol === ':') return `<span style='color:#33aaff;'>${kata}:</span>`;
+        else return `<span style='color:#ffb100;'>${kata}=</span>`;
+    }); 
+
+    // --- MUSEUM KODINGAN ABANG ---
+    // str = str.replace(/(class|id|name|type|value|style|onclick|onkeyup|oninput|href|placeholder)=/g, "<span style='color:#ffb100;'>$1=</span>");
+    // str = str.replace(/(z-index|position|top|left|width|height|overflow|font-size|padding|margin|border):/g, "<span style='color:#33aaff;'>$1:</span>");
+
+    // --- 5. KEYWORD & PETIK ---
+    str = str.replace(/function/g, "<span style='color:#ebb8ff;'>function</span>");
+    str = str.replace(/const/g, "<span style='color:#00ffff;'>const</span>"); 
+    str = str.replace(/\b(\w+)(?=\s*\()/g, "<span style='color:#66d9ef;'>$1</span>");
+    str = str.replace(/"([^"]*)"/g, "<span style='color:#ffffff;'>\"$1\"</span>");
+    str = str.replace(/(&lt;|&gt;|&#47;)/g, "<span class='xbijw'>$1</span>");
+
+    // Balikin Merah & Tag
+    str = str.replace(/TOKEN_MERAH_(\w+)_TOKEN/g, "<span style='color:#df8080;'>$1</span>");
+    const polaTag = new RegExp(`\\b(${daftarTag.join('|')})\\b`, 'g');
+    str = str.replace(polaTag, "<span style='color:#fff000;'>$1</span>");
+    str = str.replace(/(?<![#&;])\b(\d+)\b(?![^<]*>)/g, "<span style='color:#ffcc00;'>$1</span>");
+
+    // --- 6. STABILO CARI ---
+    if (kataKunci && kataKunci.trim() !== "") {
+        let regexCari = new RegExp('(' + kataKunci.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + ')', 'gi');
+        str = str.replace(regexCari, '<mark class="stabilo">$1</mark>');
+    }
+
+    // --- 7. BUKA GEMBOK (CLEANING AKHIR) ---
+    str = str.replace(/TOKEN_KOM_HTML_MULAI([\s\S]*?)TOKEN_KOM_HTML_SELESAI/g, (match, p1) => {
+        let steril = p1.replace(/<span[^>]*>|<\/span>/g, ""); 
+        return `<span style='color:#757575; font-style:italic;'>${steril}</span>`;
+    });
+  
+    str = str.replace(/TOKEN_KOMENTAR_MULAI([\s\S]*?)TOKEN_KOMENTAR_SELESAI/g, (match, p1) => {
+        // Buang span warna-warni yang nggak sengaja nyelip di dalem komentar
+        let bersih = p1.replace(/<span[^>]*>|<\/span>/g, ""); 
+        return `<span style='color:#757575; font-style:italic;'>${bersih}</span>`;
+    });  
+
+    // --- 8. TAMPILKAN ---
+    xcode2.innerHTML = str; 
+    document.getElementById('jajal').innerHTML = isi; 
+    localStorage.setItem('KODE_SAKTI_HP', isi);
+  
+// --- 9. PANGGIL AUTOCOMPLETE (BIAR HURUF 'B', 'D' DLL MUNCULIN MENU) ---
+    if (document.getElementById("carikodeSh")) {
+        document.getElementById("carikodeSh").value = ambl;
+        carikodeSdanH();
+    }
+  
+  const areaTabel = document.getElementById('filterTabel');
+if (areaTabel) {
+    areaTabel.addEventListener('keydown', function(e) {
+        if (e.key === "Escape") {
+            // 1. Ngumpet semua kotak rahasia
+            document.getElementById('kotakFlex').style.display = "none";
+
+        }
+    });
+  // Biar di HP juga bisa ngumpet pas kita sentuh area ngetik
+areaTabel.addEventListener('touchstart', function() {
+    document.getElementById('kotakFlex').style.display = "none";
+});
+
+// Buat di laptop kalau klik pake mouse juga ngumpet
+areaTabel.addEventListener('mousedown', function() {
+    document.getElementById('kotakFlex').style.display = "none";
+});
+}
+}
+
+// --- 4. FUNGSI CEK (Taruh di luar juga boleh) ---
+function cekKesehatanScript(kode) {
+  
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = kode;
+    const scripts = tempDiv.getElementsByTagName('script');
+    
+    // Kalau nggak ada script, bersihin console
+    if (scripts.length === 0) {
+        document.getElementById('console-mini').innerHTML = '<span style="color:#888;">-- Radar Aktif, Bang! --</span>';
+        return;
+    }
+
+    for (let i = 0; i < scripts.length; i++) {
+        try {
+    // Kita tambahkan "use strict" supaya JS lebih galak sama variabel aneh
+    new Function('"use strict"; ' + scripts[i].innerText);
+    document.getElementById('console-mini').innerHTML = '<span style="color:#00ff00;">-- Kode Aman, Bang! --</span>';
+} catch (e) {
+    console.error("Aduh Bang! Ada yang salah ketik: " + e.message);
+}
+    }
+}
+
+// 3. Fungsi khusus buat JALANKAN SCRIPT (Klik tombol kalau mau tes script)
+function runningScript() {
+    const isi = document.getElementById('filterTabel').value;
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = isi;
+    const scripts = tempDiv.getElementsByTagName('script');
+    
+    for (let i = 0; i < scripts.length; i++) {
+        try {
+            const s = document.createElement('script');
+            s.text = scripts[i].innerText;
+            document.head.appendChild(s).parentNode.removeChild(s);
+        } catch (e) {
+            alert("Ada yang salah di script-nya, Bang!");
+        }
+    }
+}
+
+// Pisahin fungsi script biar gak ganggu textarea
+function eksekusiScript(kode) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = kode;
+    const scripts = tempDiv.getElementsByTagName('script');
+    for (let i = 0; i < scripts.length; i++) {
+        try {
+            const s = document.createElement('script');
+            s.text = scripts[i].innerText;
+            document.head.appendChild(s).parentNode.removeChild(s);
+        } catch (e) {}
+    }
+}
+  
+
+    // FUNGSI COPY ALL (Ini yang Abang minta)
+    function copyKeClipboard() {
+        const area = document.getElementById('filterTabel');
+        area.select();
+        area.setSelectionRange(0, 99999); // Untuk HP
+
+        try {
+            navigator.clipboard.writeText(area.value);
+            alert("Kode sudah disalin ke clipboard, Bang!");
+        } catch (err) {
+            // Backup kalau browser HP jadul
+            document.execCommand('copy');
+            alert("Kode berhasil dicopy!");
+        }
+    }
+
+    function hapusSemua() {
+        if(confirm("Yakin mau dikosongin kodenya, Bang?")) {
+            document.getElementById('filterTabel').value = '';
+            localStorage.removeItem('KODE_SAKTI_HP');
+            simpanDanTampil();
+        }
+    }
+  
+  
+  // Filter
+  function cariSakti() {
+  const input = document.getElementById('cariKata').value.toLowerCase();
+  const bar = document.getElementById('toolbar');
+  const tombols = document.querySelectorAll('.btn-sakti');
+  let ditemukan = false;
+
+  tombols.forEach(btn => {
+    // Jika ketikan ada di dalam value tombol
+    if (input !== "" && btn.value.includes(input)) {
+      btn.style.display = "inline-block";
+      ditemukan = true;
+    } else {
+      btn.style.display = "none";
+    }
+  });
+
+  // Munculkan toolbar hanya jika ada tombol yang cocok
+  bar.style.display = ditemukan ? "block" : "none";
+}
+
+ //buat link baru
+
+function buatLingb() {
+    const filterTabel = document.getElementById('filterTabel');
+    const lkg = document.getElementById('lingBuatbaru').value;
+    
+    // 1. Ambil posisi kursor saat ini
+    let start = filterTabel.selectionStart;
+    let end = filterTabel.selectionEnd;
+    let isiLama = filterTabel.value;
+
+    // 2. Siapkan kode link-nya
+    const gabrLink = '<a href="' + lkg + '"></a>';
+
+    // 3. SUNTIKKAN ke tengah: (Teks Depan + Link + Teks Belakang)
+    filterTabel.value = isiLama.substring(0, start) + gabrLink + isiLama.substring(end);
+
+    // 4. POSISIKAN KURSOR ke tengah-tengah tag <a>|</a> biar bisa langsung ngetik isinya
+    // Posisi tengah itu: (panjang teks depan) + (panjang <a href="...">)
+    let posisiTengah = start + (gabrLink.length - 4); 
+    filterTabel.setSelectionRange(posisiTengah, posisiTengah);
+
+    // 5. Beresin sisa-sisa
+    document.getElementById('lingBuatbaru').value = "";
+    filterTabel.focus();
+
+    // 6. Update warna (WAJIB)
+    simpanDanTampil(""); 
+}
+  
+  // YANG PANJANG PANJANG
+function yangpanjang(ypj) {
+    const filterTabel = document.getElementById("filterTabel");
+    const terkirim = document.getElementById("terkirim");
+
+    let start = filterTabel.selectionStart;
+    let end = filterTabel.selectionEnd;
+    let isiLama = filterTabel.value;
+
+    let kodeRapi = ypj;
+
+    // 1. CEK: Apakah ini CSS atau HTML?
+    if (ypj.includes('{') || ypj.includes(':')) {
+        // --- ALAM CSS ---
+        // Potong setiap ada titik koma
+        kodeRapi = ypj.replace(/;/g, ";\n    ");
+    } else if (ypj.includes('<')) {
+        // --- ALAM HTML (Table, Ul, Li, dll) ---
+        // Tambahin baris baru setelah tag pembuka tertentu dan semua tag penutup
+        // Kita targetkan tag yang sering bikin "kereta": table, tr, td, ul, li
+        kodeRapi = ypj.replace(/(<\/td>|<\/tr>|<\/tbody>|<\/table>|<\/ul>|<\/li>)/g, "$1\n");
+        kodeRapi = kodeRapi.replace(/(<tr>|<tbody>|<table>|<ul>)/g, "$1\n    ");
+        kodeRapi = kodeRapi.replace(/(<td>)/g, "    $1");
+      
+      document.getElementById('kotakFlex').style.display = "none";
+    }
+
+    // 2. SUNTIKKAN
+    filterTabel.value = isiLama.substring(0, start) + kodeRapi + isiLama.substring(end);
+
+    // 3. RAPIKAN KURSOR
+    let posisiBaru = start + kodeRapi.length;
+    filterTabel.setSelectionRange(posisiBaru, posisiBaru);
+
+    filterTabel.focus();
+    simpanDanTampil(""); 
+
+    // Notifikasi
+    terkirim.style.display = "block";
+    setTimeout(() => { terkirim.style.display = "none"; }, 2000);
+}
+//warna
+function getColor() {
+  document.getElementById("tekopy").value ='' +  document.getElementById("inputColor").value;
+	//kopy
+	var coTex = document.getElementById("tekopy");  
+    coTex.select();  
+    document.execCommand("copy");
+}
+
+//<KOMEN> buku saku
+    // LocalStorage dibedakan namanya: KOLEKSI_KODE_OPIK
+    let listSaku = JSON.parse(localStorage.getItem('KOLEKSI_KODE_OPIK')) || [];
+    let idAktif = null;
+
+    function tambahLembaran() {
+        const baru = {
+            id: Date.now(),
+            judul: "Judul Baru",
+            isi: "",
+            waktu: new Date().toLocaleString('id-ID')
+        };
+        listSaku.unshift(baru); // Tambah ke paling atas
+        idAktif = baru.id;
+        simpanDanRefresh();
+    }
+
+    // 2. Tampilkan Daftar di Wadah Saku (Tabel Mode)
+    function tampilkanSaku() {
+        const saku = document.getElementById('wadahsaku');
+        saku.innerHTML = "";
+
+        listSaku.forEach((note, index) => {
+            const div = document.createElement('div');
+            div.className = 'item-saku';
+            div.innerHTML = `
+                <div class="info-saku" onclick="bukaCatatan(${note.id})">
+                    <b>${note.judul || '(Tanpa Judul)'}</b>
+                    <small>${note.waktu}</small>
+                </div>
+                <button class="btn-hapus" onclick="hapusCatatan(event, ${index})">Hapus</button>
+            `;
+            saku.appendChild(div);
+        });
+    }
+
+    // 3. Buka Catatan di Wadah Utama
+    function bukaCatatan(id) {
+    idAktif = id;
+    const note = listSaku.find(n => n.id === id);
+    const utama = document.getElementById('wadah-utama');
+    // Sebelum dimasukkan ke innerHTML, kita cuci dulu &nbsp; nya jadi spasi biasa
+    let isiBersih = note.isi.replace(/&nbsp;/g, ' ');
+
+    utama.innerHTML = `
+        <div class="judul-aktif" contenteditable="true" oninput="updateData(${id}, 'judul', this.innerHTML)">${note.judul}</div>
+        <small class="tgl-aktif">${note.waktu}</small>
+        <div class="editor-aktif" contenteditable="true" oninput="updateData(${id}, 'isi', this.innerHTML)">${note.isi}</div>
+        <div id="muter" style="display:none;><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><div class="spinner-pelangi">
+        SEDANG MERAKIT KODE...
+    </div>
+</div>
+        <div style="margin-top:10px; display: flex; gap: 5px;">
+            <button class="btn-sakti" onclick="tutupEditori()">Simpan & Tutup</button>
+            
+            <button class="btn-sakti" onclick="liatinKeEditor('${id}')" style="background:#2ecc71;">Liatin</button>
+            
+            <button class="btn-sakti" onclick="copyIsi('${id}')" style="background:#3498db;">Copy Kode</button>
+        </div>
+    `;
+   
+    lebarbukubaru.style.display ='none';
+    klip.style.display ='block';
+    wadahsaku.style.display ='none';
+}
+
+     // FUNGSI UNTUK PINDAHIN KE EDITOR UTAMA
+function liatinKeEditor(id) {
+    const note = listSaku.find(n => n.id == id);
+    const area = document.getElementById('filterTabel');
+    const preview = document.getElementById('xcode2');
+    const muter = document.getElementById('muter'); // Panggil spinner pelangi
+    
+    if (note) {
+        // --- PROSES CUCI GUDANG (Sama kaya fungsi Copy) ---
+        let tempDiv = document.createElement("div");
+        tempDiv.innerHTML = note.isi; 
+        
+        // Ambil teks murni, buang sampah sekecamatan
+        let kodeBersih = tempDiv.innerText || tempDiv.textContent;
+        
+        // Bilas sisa-sisa karakter siluman
+        kodeBersih = kodeBersih.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+        // --- EFEK NYENTRIK MULAI ---
+        muter.style.display = 'block'; // Munculin spinner pelangi
+        
+        setTimeout(() => {
+            // 1. Masukkan kode ke Textarea
+            area.value = kodeBersih;
+            
+            // 2. Tampilkan hasil jadinya di Preview
+            preview.innerHTML = kodeBersih;
+            
+            // 3. Matikan spinner
+            muter.style.display = 'none';
+            
+            // 4. AUTO-FOCUS: Kursor langsung siap tempur!
+            area.focus();
+            area.selectionStart = area.selectionEnd = area.value.length;
+            
+            // 5. Update sistem radar
+            simpanDanTampil('manual');
+
+            console.log("Radar: Kode dari arsip sudah bersih dan mendarat dengan selamat!");
+        }, 1000); // 1 detik aja cukup Bang biar gak kelamaan nunggu
+    }
+}
+
+    // FUNGSI COPY KE CLIPBOARD
+    function copyIsi(id) {
+    const note = listSaku.find(n => n.id == id);
+    if (note) {
+        // --- PROSES CUCI GUDANG ---
+        let tempDiv = document.createElement("div");
+        tempDiv.innerHTML = note.isi; // Masukin kodenya ke wadah sementara
+        
+        // Ambil teksnya saja (innerText otomatis buang semua <div> dan <span>)
+        let teksMurni = tempDiv.innerText || tempDiv.textContent;
+        
+        // Kadang &lt; masih nyangkut, kita bersihin manual sekali lagi
+        teksMurni = teksMurni.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+        // Proses Copy ke Clipboard
+        navigator.clipboard.writeText(teksMurni).then(() => {
+            alert("Hasil Copy BERSIH TOTAL, Bang! Cobain paste di Notepad.");
+        }).catch(err => {
+            console.error("Gagal copy: ", err);
+        });
+    }
+}
+
+    // 4. Update Data saat Mengetik (Otomatis naik ke atas jika diedit)
+    // Gantinya innerHTML jadi innerText atau textContent
+    function updateData(id, field, value) {
+        const idx = listSaku.findIndex(n => n.id === id);
+        if (idx !== -1) {
+            listSaku[idx][field] = value;
+            
+            // Pindahkan ke paling atas (karena baru diedit)
+            const item = listSaku.splice(idx, 1)[0];
+            listSaku.unshift(item);
+            
+            simpanKeStorage();
+            tampilkanSaku(); // Update daftar judul di bawah secara real-time
+        }
+    }
+
+    function simpanKeStorage() {
+        localStorage.setItem('KOLEKSI_KODE_OPIK', JSON.stringify(listSaku));
+    }
+
+    function simpanDanRefresh() {
+        simpanKeStorage();
+        tampilkanSaku();
+        if (idAktif) bukaCatatan(idAktif);
+    }
+
+    function tutupEditori() {
+  //      document.getElementById('wadah-utama').innerHTML = `<div style="color: #ccc; text-align: center; margin-top: 50px;">Catatan tersimpan di daftar bawah.</div>`;
+        idAktif = null;
+      lebarbukubaru.style.display ='block';
+      klip.style.display ='none';
+	  wadahsaku.style.display ='block';
+    }
+
+    function hapusCatatan(e, index) {
+        e.stopPropagation(); // Biar nggak ikut buka catatan saat klik hapus
+        if (confirm("Hapus catatan ini?")) {
+            listSaku.splice(index, 1);
+            simpanKeStorage();
+            tampilkanSaku();
+            tutupEditori();
+        }
+    }
+
+    // Jalankan pertama kali
+    tampilkanSaku();
+	
+    // --------DUA funtion DIBAWAH UNTUK TOMBOL HTML & CSS
+function carikodeSdanH() {
+    const code = document.getElementById('filterTabel');
+    const bar = document.getElementById('kelompokHtSt');
+    let pos = code.selectionStart;
+    let teks = code.value;
+
+    // 1. Ambil kata pemicu (5 karakter ke belakang)
+    let kataCari = teks.substring(pos - 5, pos).split(/[\s<>/'"]+/).pop().toLowerCase();
+    document.getElementById('carikodeSh').value = kataCari;
+
+    // 2. Kalau kosong atau cuma spasi, langsung sembunyi
+    if (kataCari === "" || teks.charAt(pos - 1) === " ") {
+        bar.style.display = "none";
+        return;
+    }
+
+    // 3. Gabungkan semua kategori jadi satu pasukan pencari
+    const semuaPilihan = [...dataSakti.tag, ...dataSakti.atribut, ...dataSakti.css];
+
+    // 4. Bersihkan isi toolbar lama
+    bar.innerHTML = ""; 
+    let ditemukan = false;
+
+    // 5. Filter: Cuma buat tombol yang diawali dengan kata yang Abang ketik
+    semuaPilihan.forEach(item => {
+        if (item.startsWith(kataCari)) {
+            let btn = document.createElement('input');
+            btn.type = 'button';
+            btn.className = 'btn-KodHs';
+            btn.value = item;
+            btn.onclick = function() { untukKodHs(item); };
+            bar.appendChild(btn);
+            ditemukan = true;
+        }
+    });
+
+// 6. Tampilkan di posisi yang AMAN (nggak lari-larian)
+    if (ditemukan) {
+        // Opsi 1: Tetap pakai koordinat tapi kita kasih "Peredam"
+        const koordinat = dapatkanKoordinatKursor(code, pos);
+        
+        // Kita kurangi koordinat Y dengan posisi scroll textarea-nya
+        let posisiY = koordinat.y - code.scrollTop; 
+        
+        // Jaga-jaga biar nggak terlalu tinggi atau terlalu rendah
+        bar.style.left = "10px"; // Taruh di kiri saja biar rapi
+        bar.style.top = "5px"; // Selalu muncul di atas keyboard
+        bar.style.position = "fixed"; // Pakai FIXED biar nggak ikut ke-scroll
+        bar.style.top = "auto"; // Matikan fungsi TOP
+        bar.style.display = "flex"; // Pakai flex biar tombolnya rapi ke samping
+        bar.style.zIndex = "9999"; 
+    } else {
+        bar.style.display = "none";
+    }
+}
+
+function untukKodHs(kodsdh) {
+    const filterTabel = document.getElementById("filterTabel");
+    const carikodeSh = document.getElementById('carikodeSh');
+    
+    let start = filterTabel.selectionStart;
+    let end = filterTabel.selectionEnd;
+    let isi = filterTabel.value;
+
+    // Ambil panjang kata yang tadi diketik buat nyari (pemicu)
+    let panjangPemicu = carikodeSh.value.length;
+
+    // Potong tepat di belakang kursor sebanyak panjang pemicu
+    let teksSebelum = isi.substring(0, start - panjangPemicu);
+    let teksSesudah = isi.substring(end);
+
+    filterTabel.value = teksSebelum + kodsdh + teksSesudah;
+
+    // Balikin kursor ke posisi setelah kata baru
+    let posisiBaru = teksSebelum.length + kodsdh.length;
+    filterTabel.setSelectionRange(posisiBaru, posisiBaru);
+
+    // Tutup toolbar
+    document.getElementById('kelompokHtSt').style.display = "none";
+    carikodeSh.value = "";
+    
+    // Update tampilan warna (simpanDanTampil)
+    simpanDanTampil(filterTabel.value);
+    filterTabel.focus();
+  
+  kelompokHtSt.style.display = 'none';
+}
+  
+// 1. Daftar Tag yang mau Abang warnain & bikinin tombolnya
+const daftarTag = ["div", "button", "table", "tbody", "tr", "td", "ul", "link", "input", "output", "body", "html", "h1", "h2", "h3", "h4", "li", "script"];
+
+// 2. Fungsi untuk cetak tombol otomatis ke dalam toolbar
+function cetakTombolSakti() {
+    const wadah = document.getElementById('kelompokHtSt'); // Pastikan ID wadahnya bener
+    
+    daftarTag.forEach(tag => {
+        let btn = document.createElement('input');
+        btn.type = 'button';
+        btn.className = 'btn-KodHs'; // Pakai class Abang yang lama
+        btn.value = tag;
+        
+        // Pas diklik, dia panggil fungsi sakti Abang
+        btn.onclick = function() { 
+            untukKodHs(tag); 
+        };
+        
+        wadah.appendChild(btn);
+    });
+}
+
+// 3. Jalankan fungsi cetak tombolnya pas halaman baru dibuka
+cetakTombolSakti();
+  
+  // 1. Kelompok Data
+const dataSakti = {
+    tag: ["div", "button", "table", "tr", "td", "ul", "li", "h1", "input", "span", "br", "hr", "p", "a", "img"],
+    atribut: ["class", "id", "style", "type", "value", "name", "onclick", "src", "href", "placeholder"],
+    css: ["color", "background", "border", "margin", "padding", "width", "height", "display", "font-size", "position"]
+};
+
+// 2. Fungsi Cetak Berdasarkan Kategori
+function cetakKategori() {
+    const wadah = document.getElementById('kelompokHtSt');
+    wadah.innerHTML = ""; // Bersihin dulu biar gak dobel
+
+    // Kita looping tiap kategori
+    for (let kategori in dataSakti) {
+        // Bikin judul kecil buat kategori (opsional)
+        let label = document.createElement('small');
+        label.innerText = kategori.toUpperCase();
+        label.style.display = "block";
+        label.style.color = "#888";
+        wadah.appendChild(label);
+
+        // Cetak tombolnya
+        dataSakti[kategori].forEach(item => {
+            let btn = document.createElement('input');
+            btn.type = 'button';
+            btn.className = 'btn-KodHs';
+            btn.value = item;
+            btn.onclick = function() { untukKodHs(item); };
+            wadah.appendChild(btn);
+        });
+        
+        wadah.appendChild(document.createElement('hr')); // Pembatas antar kategori
+    }
+}
+
+// Jalankan pas mulai
+cetakKategori();
+  
+
+  // -----INI AKHIR DUA funtion TOMBOL HTML & CSS
+ 
+  //memunculkan disetiap kursor
+function dapatkanKoordinatKursor(element, posisi) {
+    const { offsetLeft, offsetTop, clientHeight, clientWidth } = element;
+    
+    // Kita buat elemen bayangan (dummy) buat nyontek posisi teks
+    const div = document.createElement('div');
+    const gaya = window.getComputedStyle(element);
+    for (let prop of gaya) {
+        div.style[prop] = gaya[prop];
+    }
+    
+    div.style.position = 'absolute';
+    div.style.visibility = 'hidden';
+    div.style.whiteSpace = 'pre-wrap';
+    div.textContent = element.value.substring(0, posisi);
+    
+    const span = document.createElement('span');
+    span.textContent = element.value.substring(posisi) || '.';
+    div.appendChild(span);
+    
+    document.body.appendChild(div);
+    const { offsetLeft: spanLeft, offsetTop: spanTop } = span;
+    document.body.removeChild(div);
+    
+    return {
+        x: offsetLeft + spanLeft,
+        y: offsetTop + spanTop + 20 // +20 biar muncul di bawah hurufnya
+    };
+}
+  
+  // kolom buka tutup halaman
+  function tutupKolom(namaKelas) {
+  // Aturan CSS yang akan diterapkan
+  var aturanCSS = '.' + namaKelas + ' { display: block; }span.'+ namaKelas +'{background:#ebebeb;color:black;}';
+  
+  
+  // Langsung memasukkan aturan ke elemen <style id="memo">
+  document.getElementById("kolom-bukatutuphalaman").innerHTML = aturanCSS;
+}
+  
+const ngetik = document.getElementById('filterTabel');
+const toolbar = document.getElementById('toolbar1');
+
+// Pas klik kolom ngetik (Keypad muncul)
+ngetik.addEventListener('focus', function() {
+    toolbar.style.display = 'none'; // Toolbar1 ngumpet
+});
+
+// Pas klik di luar atau selesai ngetik
+ngetik.addEventListener('blur', function() {
+    // Kita kasih delay 200ms biar kalau kita klik tombol di toolbar, 
+    // fungsinya jalan dulu sebelum dia muncul lagi
+    setTimeout(() => {
+        toolbar.style.display = 'flex'; // Muncul lagi (pake flex/block sesuai aslinya)
+    }, 200);
+});
+  
+function bukaGaleri() {
+    document.getElementById('ambilFoto').click();
+}
+
+function prosesGambar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const area = document.getElementById('filterTabel');
+            // Ambil data gambar dalam bentuk teks panjang
+            const kodeGambar = `<img class="gbr" src="${e.target.result}">\n`;
+            
+            // Masukin ke posisi kursor atau paling bawah
+            const posisiKursor = area.selectionStart;
+            const teksAwal = area.value.substring(0, posisiKursor);
+            const teksAkhir = area.value.substring(area.selectionEnd);
+            
+            area.value = teksAwal + kodeGambar + teksAkhir;
+            
+            // PENTING: Panggil fungsi warna-warni Abang lagi biar sinkron
+            simpanDanTampil(area.value);
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+  
+function linkgambarpoto() {
+      const filterTabel = document.getElementById('filterTabel');
+    const lgb = document.getElementById('linggambr').value;
+    
+    // 1. Ambil posisi kursor saat ini
+    let start = filterTabel.selectionStart;
+    let end = filterTabel.selectionEnd;
+    let isiLama = filterTabel.value;
+
+    // 2. Siapkan kode link-nya
+    const kodgambr = '<img class="gbr" src="' + lgb + '">\n';
+
+    // 3. SUNTIKKAN ke tengah: (Teks Depan + Link + Teks Belakang)
+    filterTabel.value = isiLama.substring(0, start) + kodgambr + isiLama.substring(end);
+
+    // 4. POSISIKAN KURSOR tepat SETELAH gambar
+    // Biar Abang bisa langsung lanjut ngetik baris baru di bawahnya
+    let posisiSetelah = start + kodgambr.length; 
+    filterTabel.setSelectionRange(posisiSetelah, posisiSetelah);
+
+    // 5. Beresin sisa-sisa
+    document.getElementById('linggambr').value = "";
+    filterTabel.focus();
+
+    // 6. Update warna (WAJIB)
+    simpanDanTampil(""); 
+  // Biar menunya langsung mingkem setelah kirim
+document.querySelector('.xrn-xttbiji').style.display = 'none';
+}
+  </script>
+  
+</body>
+</html>
