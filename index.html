@@ -47,6 +47,7 @@
     box-sizing: border-box;
     tab-size: 4;           /* Biar kalau ngetik Tab tetep rata */
   outline: none;
+  padding-left: 50px !important; /* Geser teks ke kanan biar gak tumpang tindih sama angka */
 }
 
 #filterTabel {
@@ -79,7 +80,32 @@
     border: 1px solid #444;
     overflow: auto;
 }
-
+/* Kotak angka di kiri */
+#nomorBaris {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px; /* Lebar kolom */
+    height: 425px; 
+    background: #1a1a1a; /* Lebih gelap dari background utama */
+    color: #555; /* Warna angka redup biar gak ganggu mata */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 20px; /* HARUS SAMA DENGAN TEXTAREA */
+    padding: 15px 5px;
+    text-align: right;
+    overflow: hidden;
+    z-index: 5;
+    box-sizing: border-box;
+    border-right: 1px solid #333;
+    pointer-events: none;
+}
+/* Class buat angka yang lagi dipijak kursor */
+.angka-aktif {
+    color: #ffffff !important; /* Warna angka jadi putih terang */
+    font-weight: bold;
+    background: #333; /* Kasih background dikit biar makin jelas */
+}      
 /* Biar span nggak nambahin lebar */
 #xcode2 span {
     background: transparent;
@@ -337,6 +363,7 @@ div#muter{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%
 <body style="background:#000000">
   <div class="tulis">	  
 <div class="wadah-sakti">
+  <div id="nomorBaris">1</div>
   <textarea id="filterTabel" onkeyup="simpanDanTampil(this.value)" oninput="simpanDanTampil(this.value)" onscroll="samainScroll()"></textarea>
   <div id="xcode2"></div>
    
@@ -809,10 +836,17 @@ function isiNilai(karakter) {
 }
 
 function samainScroll() {
-  var filterTabel = document.getElementById('filterTabel');
-  var xcode2 = document.getElementById('xcode2');
-  xcode2.scrollTop = filterTabel.scrollTop;
-  xcode2.scrollLeft = filterTabel.scrollLeft;
+    var filterTabel = document.getElementById('filterTabel');
+    var xcode2 = document.getElementById('xcode2');
+    var nomorBaris = document.getElementById('nomorBaris');
+
+    window.requestAnimationFrame(function() {
+        xcode2.scrollTop = filterTabel.scrollTop;
+        xcode2.scrollLeft = filterTabel.scrollLeft;
+        
+        // Angka baris cuma perlu ikut naik turun (Vertical), kiri kanan gak perlu
+        nomorBaris.scrollTop = filterTabel.scrollTop;
+    });
 }
   
 // 2. Fungsi simpan & tampilkan HTML/CSS saja
@@ -871,6 +905,27 @@ if (isi.includes("flex")) {
         
         area.focus();
     }
+  
+  // --- BAGIAN ANGKA BARIS (NEW!) ---
+const jumlahBaris = isi.split('\n').length;
+    
+    // Cari tahu kursor lagi di baris mana
+    const posisiKursor = area.selectionStart;
+    const barisAktif = isi.substr(0, posisiKursor).split('\n').length;
+
+    let daftarAngka = "";
+    for (let i = 1; i <= jumlahBaris; i++) {
+        if (i === barisAktif) {
+            // Kalau angkanya sama dengan baris kursor, kasih class aktif
+            daftarAngka += `<span class="angka-aktif">${i}</span><br>`;
+        } else {
+            daftarAngka += i + "<br>";
+        }
+    }
+    
+    const kolomAngka = document.getElementById('nomorBaris');
+    if(kolomAngka) { kolomAngka.innerHTML = daftarAngka; }
+    // ---------------------------------
     const xcode2 = document.getElementById('xcode2');
     let kataKunci = document.getElementById('cariTeks').value;
 
@@ -975,6 +1030,18 @@ areaTabel.addEventListener('mousedown', function() {
     document.getElementById('kotakFlex').style.display = "none";
 });
 }
+  
+// Biar angka aktif pindah pas kita klik baris lain
+document.getElementById('filterTabel').addEventListener('click', function() {
+    simpanDanTampil(this.value);
+});
+
+// Biar angka aktif pindah pas kita pencet panah atas/bawah
+document.getElementById('filterTabel').addEventListener('keyup', function(e) {
+    if (e.key.includes('Arrow')) {
+        simpanDanTampil(this.value);
+    }
+});
 }
 
 // --- 4. FUNGSI CEK (Taruh di luar juga boleh) ---
@@ -1621,6 +1688,8 @@ document.querySelector('.xrn-xttbiji').style.display = 'none';
 </script>
 </body>
 </html>
+</html>
+
 
 
 
