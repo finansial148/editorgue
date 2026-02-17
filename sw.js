@@ -1,28 +1,41 @@
-const namaCache = 'editor-v1';
+const namaCache = 'editor-v2'; // Ganti v1 jadi v2 biar browser sadar ada update
 
-// CUMA MASUKIN YANG PASTI ADA DI REPO GITHUB ABANG
 const fileWajib = [
   './',
   './index.html',
   './manifest.json'
 ];
 
-// Bagian install (Kita tambahin console log biar ketahuan mana yang bikin macet)
 self.addEventListener('install', (event) => {
+  // Langsung aktifkan satpam baru tanpa nunggu browser ditutup (Skip Waiting)
+  self.skipWaiting();
+  
   event.waitUntil(
     caches.open(namaCache).then((cache) => {
-      console.log('Satpam lagi kerja...');
-      // Kita pakai satu-satu biar kalau ada yang gagal, sisanya tetep aman
       return Promise.all(
         fileWajib.map((url) => {
-          return cache.add(url).catch((err) => console.log('File ini gagal diambil: ' + url));
+          // fetch(url) dulu untuk memastikan filenya benar-benar ada
+          return fetch(url).then((response) => {
+            if (!response.ok) throw new Error('File tidak ketemu: ' + url);
+            return cache.put(url, response);
+          }).catch(err => console.log('Gagal ambil: ', url));
         })
       );
     })
   );
 });
 
-// Sisa kode fetch tetap sama
+self.addEventListener('activate', (event) => {
+  // Hapus cache lama (v1) kalau ada, biar gak menuh-menuhin memori
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter(key => key !== namaCache).map(key => caches.delete(key))
+      );
+    })
+  );
+});
+
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
