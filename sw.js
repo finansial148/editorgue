@@ -1,31 +1,31 @@
 const namaCache = 'editor-v1';
 
-// Daftar file yang mau disimpan biar bisa dibuka offline
-// Pastikan nama filenya persis dengan yang ada di GitHub Abang
+// CUMA MASUKIN YANG PASTI ADA DI REPO GITHUB ABANG
 const fileWajib = [
   './',
   './index.html',
-  './manifest.json',
-  // Kalau Abang punya file CSS atau JS terpisah, masukin di sini ya
-  // './style.css',
-  // './script.js'
+  './manifest.json'
 ];
 
-// 1. Proses Instalasi (Nabung file ke memori)
+// Bagian install (Kita tambahin console log biar ketahuan mana yang bikin macet)
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(namaCache).then((cache) => {
-      console.log('Satpam lagi ngetik file ke memori...');
-      return cache.addAll(fileWajib);
+      console.log('Satpam lagi kerja...');
+      // Kita pakai satu-satu biar kalau ada yang gagal, sisanya tetep aman
+      return Promise.all(
+        fileWajib.map((url) => {
+          return cache.add(url).catch((err) => console.log('File ini gagal diambil: ' + url));
+        })
+      );
     })
   );
 });
 
-// 2. Proses Pengambilan (Kalau offline, ambil dari memori)
+// Sisa kode fetch tetap sama
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Kalau ada di memori, kasih. Kalau nggak ada, baru cari ke internet.
       return response || fetch(event.request);
     })
   );
