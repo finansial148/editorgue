@@ -18,18 +18,6 @@
     
     <title>Editor sederhana</title>
     <style>
-       /*-------untuk blogspot-------------*/
-    .date-outer,.content-inner {
-    background-color: #000000;
-} 
-     .mobile .content-outer {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    margin: auto;
-} 
-      h3.post-title.entry-title {
-    display: none;
-}
   /*------- papan editor awal-------------*/
   .wadah-sakti {
     position: relative; /* Biar bisa ditumpuk */
@@ -857,24 +845,21 @@ let pesanTerakhir = ""; // Ini buat "ingatan" si console
 
 console.error = function (pesan) {
     const con = document.getElementById('console-mini');
-    
-    // CEK: Kalau pesan sekarang SAMA dengan pesan terakhir, cuekin aja!
-    if (pesan === pesanTerakhir) {
-        errorAsli.apply(console, arguments);
-        return;
-    }
+    if (pesan === pesanTerakhir) return;
 
     if (con) {
-        // Simpan pesan ini ke ingatan
         pesanTerakhir = pesan;
 
+        // Trik: Kalau ada tulisan "line 1788" atau angka gede, kita samarkan atau bersihkan
+        // Biar Abang nggak pusing liat angka ribuan yang ngaco itu
+        let pesanBersih = pesan.toString().replace(/at line \d+|:\d+:\d+/g, "");
+
         con.innerHTML += `<div style="margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 2px;">
-            <span style="color:#ff4444;">[ERR]:</span> ${pesan}
+            <span style="color:#ff4444;">[ERR]:</span> ${pesanBersih} 
+            <i style="color:#666; font-size:10px;">(Cek area kodingan terakhir)</i>
         </div>`;
         
         con.scrollTop = con.scrollHeight;
-
-        // Reset ingatan setelah 1 detik (biar kalau errornya muncul lagi nanti, tetep ketahuan)
         setTimeout(() => { pesanTerakhir = ""; }, 1000);
     }
     errorAsli.apply(console, arguments);
@@ -885,8 +870,18 @@ function jalankanFiturCari() {
     let isi = document.getElementById('filterTabel').value;
     simpanDanTampil(isi); // Panggil fungsi tampil biar direfresh
 }
-  
-function simpanDanTampil(ambl) {
+let timerSakti;
+  // 1. Ini fungsi barunya (Si Tukang Jaga Waktu)
+function simpanDanTampil(isi) {
+    // Kalau ada perintah lari yang belum jalan, BATALKAN!
+    clearTimeout(timerSakti);
+
+    // Bikin perintah lari baru yang bakal jalan setelah 100 milidetik
+    timerSakti = setTimeout(function() {
+        prosesKodingan(isi); 
+    }, 100); 
+}
+function prosesKodingan(ambl) {
     const area = document.getElementById('filterTabel');
     const isi = area.value;
   // --- DETEKSI PINTU RAHASIA FLEX ---
@@ -1042,6 +1037,8 @@ document.getElementById('filterTabel').addEventListener('keyup', function(e) {
         simpanDanTampil(this.value);
     }
 });
+  
+  console.log("Selesai diproses tanpa bikin HP pingsan!");
 }
 
 // --- 4. FUNGSI CEK (Taruh di luar juga boleh) ---
@@ -1688,7 +1685,7 @@ document.querySelector('.xrn-xttbiji').style.display = 'none';
 </script>
 </body>
 </html>
-</html>
+
 
 
 
