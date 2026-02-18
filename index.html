@@ -1082,7 +1082,7 @@ async function cekKesehatanScript(kode) {
         // Kalau setelah sedetik gak ada error, berarti aman
         setTimeout(() => {
             if (!konsole.innerHTML.includes('⚠️')) {
-                konsole.innerHTML = '<span style="color:#00ff00;">-- Kode Aman, Bang! --</span>';
+                konsole.innerHTML = '<span style="color:#00ff00;">-- Kode Aman, ! --</span>';
             }
             URL.revokeObjectURL(urlKeren);
         }, 500);
@@ -1709,6 +1709,7 @@ document.querySelector('.xrn-xttbiji').style.display = 'none';
 </script>
 </body>
 </html>
+
 
 
 
