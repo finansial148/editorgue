@@ -1042,26 +1042,50 @@ document.getElementById('filterTabel').addEventListener('keyup', function(e) {
 }
 
 // --- 4. FUNGSI CEK (Taruh di luar juga boleh) ---
-function cekKesehatanScript(kode) {
-  
+async function cekKesehatanScript(kode) {
+    const konsole = document.getElementById('console-mini');
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = kode;
     const scripts = tempDiv.getElementsByTagName('script');
-    
-    // Kalau nggak ada script, bersihin console
+
     if (scripts.length === 0) {
-        document.getElementById('console-mini').innerHTML = '<span style="color:#888;">-- Radar Aktif, Bang! --</span>';
+        konsole.innerHTML = '<span style="color:#888;">-- Radar Aktif, Bang! --</span>';
         return;
     }
 
     for (let i = 0; i < scripts.length; i++) {
-        try {
-    // Kita tambahkan "use strict" supaya JS lebih galak sama variabel aneh
-    new Function('"use strict"; ' + scripts[i].innerText);
-    document.getElementById('console-mini').innerHTML = '<span style="color:#00ff00;">-- Kode Aman, Bang! --</span>';
-} catch (e) {
-    console.error("Aduh Bang! Ada yang salah ketik: " + e.message);
-}
+        let materi = scripts[i].innerText;
+
+        // 1. Bikin "File Bayangan" (Blob)
+        const blob = new Blob([materi], { type: 'application/javascript' });
+        const urlKeren = URL.createObjectURL(blob);
+
+        // 2. Siapkan elemen script buat ngetes
+        const tester = document.createElement('script');
+        tester.src = urlKeren;
+
+        // 3. Tangkap kalau ada error
+        window.onerror = function(msg, url, line, col, error) {
+            // Karena ini file Blob, 'line' bakal akurat dari baris 1!
+            if (url === urlKeren) {
+                konsole.innerHTML = `<span style="color:#ff5555;">⚠️ Baris ${line}: ${msg}</span>`;
+                // Hapus file bayangan biar gak menuhin memori
+                URL.revokeObjectURL(urlKeren);
+            }
+            return true; // Biar gak muncul di console aslinya
+        };
+
+        // 4. Masukkan ke dokumen buat di-test, lalu hapus lagi
+        document.body.appendChild(tester);
+        tester.remove();
+        
+        // Kalau setelah sedetik gak ada error, berarti aman
+        setTimeout(() => {
+            if (!konsole.innerHTML.includes('⚠️')) {
+                konsole.innerHTML = '<span style="color:#00ff00;">-- Kode Aman, Bang! --</span>';
+            }
+            URL.revokeObjectURL(urlKeren);
+        }, 500);
     }
 }
 
@@ -1685,6 +1709,7 @@ document.querySelector('.xrn-xttbiji').style.display = 'none';
 </script>
 </body>
 </html>
+
 
 
 
