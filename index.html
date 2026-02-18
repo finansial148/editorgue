@@ -1046,45 +1046,26 @@ function cekKesehatanScript(kode) {
     const konsole = document.getElementById('console-mini');
     const semuaBaris = kode.split('\n');
 
-    // --- 1. CARI TITIK START SCRIPT (Biar Barisnya Pas) ---
-    let barisMulaiScript = 0;
-    for (let i = 0; i < semuaBaris.length; i++) {
-        if (semuaBaris[i].includes('<script')) {
-            barisMulaiScript = i + 1; 
-            break; 
-        }
-    }
-
-    // --- 2. RADAR PENJAGA GERBANG (Cek HTML & Kurung) ---
+    // --- 1. RADAR TAG HTML SIMPEL ---
+    const daftarTag = "p|a|b|i|u|h1|h2|button|table|tr|td|div|span";
     for (let n = 0; n < semuaBaris.length; n++) {
         let baris = semuaBaris[n];
-        let nomorBaris = n + 1;
+        let regexTutup = new RegExp("</(" + daftarTag + ")", "gi");
+        let matchTutup = baris.match(regexTutup);
 
-        // A. Cek Kurung (Tetap)
-        let bukaK = (baris.match(/\(/g) || []).length;
-        let tutupK = (baris.match(/\)/g) || []).length;
-        if (bukaK !== tutupK) {
-            konsole.innerHTML = `<span style="color:#ffb86c;"> Baris ${nomorBaris}: Kurung ( ) gak sinkron!</span>`;
-            return;
-        }
-
-        // B. RADAR TAG HTML (Tambah p, a, b, i, dll)
-        // Kita cari tag pembuka yang gak punya penutup di baris itu
-        // Tapi inget, ini cuma buat tag yang WAJIB ada penutupnya ya Bang
-        const daftarTag = "p|a|b|i|u|h1|h2|button|table|tr|td"; 
-        const regexBuka = new RegExp("<(" + daftarTag + ")", "gi");
-        const regexTutup = new RegExp("</(" + daftarTag + ")", "gi");
-
-        let jmlBuka = (baris.match(regexBuka) || []).length;
-        let jmlTutup = (baris.match(regexTutup) || []).length;
-
-        if (jmlTutup > jmlBuka && !kode.includes('<' + baris.match(regexTutup)[0].replace('</',''))) {
-             konsole.innerHTML = `<span style="color:#ffb86c;"> Baris ${nomorBaris}: Ada penutup tag tapi pembukanya gak ketemu!</span>`;
-             return;
+        if (matchTutup) {
+            matchTutup.forEach(tutup => {
+                let tagMurni = tutup.replace('</', '').replace('>', '');
+                let regexBuka = new RegExp("<" + tagMurni, "gi");
+                if (!kode.match(regexBuka)) {
+                    konsole.innerHTML = `<span style="color:#ffb86c;">⚠️ Baris ${n + 1}: Ada </${tagMurni}> tanpa pembuka!</span>`;
+                    return;
+                }
+            });
         }
     }
 
-    // --- 3. AMBIL DAGING JAVASCRIPT ---
+    // --- 2. CEK JAVASCRIPT ---
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = kode;
     const scripts = tempDiv.getElementsByTagName('script');
@@ -1096,28 +1077,16 @@ function cekKesehatanScript(kode) {
 
     for (let i = 0; i < scripts.length; i++) {
         let materi = scripts[i].innerText; 
-        let barisJS = materi.split('\n');
-
-        // Cek Error di dalem JS pakai Matematika Abang (n + 0 + selisih)
-        for (let n = 0; n < barisJS.length; n++) {
-            let buka = (barisJS[n].match(/\(/g) || []).length;
-            let tutup = (barisJS[n].match(/\)/g) || []).length;
-            
-            if (buka !== tutup) {
-                let barisAsli = n + 0 + barisMulaiScript; // <--- SEKARANG INI AMAN
-                konsole.innerHTML = `<span style="color:#ffb86c;"> Baris ${barisAsli}: Kurungnya gak sinkron!</span>`;
-                return;
-            }
-        }
-
-        // --- 4. EKSEKUSI TERAKHIR ---
         try {
+            // Biarkan engine JS asli yang ngecek errornya, kita gak usah sok tau pake regex kurung
             new Function(materi);
+            
+            // Biar gak tabrakan sama tombol LOMPAT
             if (konsole.dataset.sedangUpdate !== "true") {
-    konsole.innerHTML = '<span style="color:#00ff00;">-- Kode Aman, Bang! --</span>';
-}
+                konsole.innerHTML = '<span style="color:#00ff00;">-- Kode Aman, Bang! --</span>';
+            }
         } catch (e) {
-            konsole.innerHTML = `<span style="color:#ff5555;"> Ada yang salah: ${e.message}</span>`;
+            konsole.innerHTML = `<span style="color:#ff5555;">⚠️ Ada yang salah: ${e.message}</span>`;
         }
     }
 }
@@ -1128,29 +1097,33 @@ function deteksiPasangan() {
     const posisi = editor.selectionStart;
     const konsole = document.getElementById('console-mini');
 
-    // 1. Cari Jodohnya
+    // 1. Cari Jodoh (fokus ke kurawal {} atau kurung () )
     let jodohIndeks = cariJodoh(teks, posisi) || cariJodoh(teks, posisi - 1);
 
     if (jodohIndeks !== null && jodohIndeks !== -1) {
         const barisJodoh = teks.substring(0, jodohIndeks).split('\n').length;
         
-        // Kita simpan laporannya
+        // 2. Siapkan Laporan
         let laporanBaru = `
-            <div id="radar-jodoh" style="display: flex; align-items: center; gap: 10px; background: #333; padding: 5px; border-radius: 5px;">
-                <span style="color:#00ffff;"> Jodoh di Baris ${barisJodoh}</span>
+            <div id="radar-jodoh" style="display: flex; align-items: center; gap: 10px; background: #333; padding: 5px; border-radius: 5px; border-left: 4px solid #00ffff;">
+                <span style="color:#00ffff; font-weight:bold;">✨ Jodoh di Baris ${barisJodoh}</span>
                 <button onclick="lompatKeBaris(${jodohIndeks})" 
-                    style="background: #00ffff; color: #000; border: none; padding: 2px 8px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 10px;">
+                    style="background: #00ffff; color: #000; border: none; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 11px;">
                     LOMPAT
                 </button>
             </div>
         `;
         
-        // Ganti isinya, tapi jangan biarkan simpanDanTampil langsung hapus
+        // 3. Pasang Laporan dan Kunci (dataset)
         konsole.innerHTML = laporanBaru;
-        
-        // Kita kasih tanda biar fungsi lain gak asal hapus selama 3 detik
         konsole.dataset.sedangUpdate = "true";
-        setTimeout(() => { konsole.dataset.sedangUpdate = "false"; }, 3000);
+
+        // 4. Buka Kunci setelah 3 detik
+        // Gunakan pembersihan timeout agar tidak tumpang tindih jika diklik berkali-kali
+        if (window.timerRadar) clearTimeout(window.timerRadar);
+        window.timerRadar = setTimeout(() => { 
+            konsole.dataset.sedangUpdate = "false"; 
+        }, 3000);
     }
 }
 // --- INI MANTRA YANG HILANG ITU, BANG ---
