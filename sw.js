@@ -1,4 +1,4 @@
-const namaCache = 'editor-v5'; // Ganti v1 jadi v2 biar browser sadar ada update
+const namaCache = 'editor-v6'; // Ganti v1 jadi v2 biar browser sadar ada update
 
 const fileWajib = [
   './',
