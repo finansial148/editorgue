@@ -1058,7 +1058,7 @@ function cekKesehatanScript(kode) {
                 let tagMurni = tutup.replace('</', '').replace('>', '');
                 let regexBuka = new RegExp("<" + tagMurni, "gi");
                 if (!kode.match(regexBuka)) {
-                    konsole.innerHTML = `<span style="color:#ffb86c;">⚠️ Baris ${n + 1}: Ada </${tagMurni}> tanpa pembuka!</span>`;
+                    konsole.innerHTML = `<span style="color:#ffb86c;"> Baris ${n + 1}: Ada </${tagMurni}> tanpa pembuka!</span>`;
                     return;
                 }
             });
@@ -1086,7 +1086,7 @@ function cekKesehatanScript(kode) {
                 konsole.innerHTML = '<span style="color:#00ff00;">-- Kode Aman, Bang! --</span>';
             }
         } catch (e) {
-            konsole.innerHTML = `<span style="color:#ff5555;">⚠️ Ada yang salah: ${e.message}</span>`;
+            konsole.innerHTML = `<span style="color:#ff5555;"> Ada yang salah: ${e.message}</span>`;
         }
     }
 }
@@ -1106,7 +1106,7 @@ function deteksiPasangan() {
         // 2. Siapkan Laporan
         let laporanBaru = `
             <div id="radar-jodoh" style="display: flex; align-items: center; gap: 10px; background: #333; padding: 5px; border-radius: 5px; border-left: 4px solid #00ffff;">
-                <span style="color:#00ffff; font-weight:bold;">✨ Jodoh di Baris ${barisJodoh}</span>
+                <span style="color:#00ffff; font-weight:bold;"> Jodoh di Baris ${barisJodoh}</span>
                 <button onclick="lompatKeBaris(${jodohIndeks})" 
                     style="background: #00ffff; color: #000; border: none; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 11px;">
                     LOMPAT
@@ -1798,4 +1798,5 @@ document.querySelector('.xrn-xttbiji').style.display = 'none';
 </script>
 </body>
 </html>
+
 
