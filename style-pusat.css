@@ -103,7 +103,7 @@ body {
     color: #1565c0; /* Warna Biru Aktif */
 }
 
-/* Kasih jarak bawah di body biar konten gak ketutup menu */
+
 body {
     padding-bottom: 80px !important;
 }
